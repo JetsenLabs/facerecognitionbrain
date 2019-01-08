@@ -4,7 +4,12 @@ import Navigation from './components/Navigation/Navigation.js';
 import Logo from './components/Logo/Logo.js';
 import Rank from './components/Rank/Rank.js';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm.js';
+import Clarifai from 'clarifai';
 import './App.css';
+
+const app = new Clarifai.App({
+ apiKey: '78dfcedee7c64544b463e78a5e75d3bb'
+});
 
 const particlesOptions = {
             "particles": {
@@ -59,6 +64,7 @@ const particlesOptions = {
         }
 
 
+
 class App extends Component {
     constructor (){
         super();
@@ -73,7 +79,17 @@ class App extends Component {
 
     onButtonSubmit = () =>{
         console.log('click');
+        app.models.initModel({id: Clarifai.GENERAL_MODEL, version: "aa7f35c01e0642fda5cf400f543e7c40"})
+      .then(generalModel => {
+        return generalModel.predict("https://samples.clarifai.com/metro-north.jpg");
+      })
+      .then(response => {
+        console.log(response);
+        var concepts = response['outputs'][0]['data']['concepts']
+      })
     }
+
+
 
   render() {
     return (
